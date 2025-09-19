@@ -89,15 +89,33 @@ const LineDiv = ({ x1, y1, x2, y2, color, thickness = 3, label }) => {
         style={{
           transform: `rotate(${-angle}deg) translateX(-15px) translateY(-15px)`,
           whiteSpace: "nowrap",
-          // The translateY value moves the label up
         }}
       >
         {label}
       </span>
+      {}
+      <div
+        style={{
+          position: "absolute",
+          left: length, 
+          top: "50%",
+          transform: `translateY(-50%)`, 
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            width: 0,
+            height: 0,
+            borderTop: `${thickness * 2}px solid transparent`,
+            borderBottom: `${thickness * 2}px solid transparent`,
+            borderLeft: `${thickness * 3}px solid black`, 
+          }}
+        />
+      </div>
     </div>
   );
 };
-
 
   const CircleDiv = ({
     x,
