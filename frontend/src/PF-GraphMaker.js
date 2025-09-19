@@ -61,10 +61,20 @@ function PFGraphMaker() {
     );
   };
 
-const LineDiv = ({ x1, y1, x2, y2, color, thickness = 3, label }) => {
+
+const LineDiv = ({ x1, y1, x2, y2, color, thickness = 3, label, fromID, toID, edges, currentEdgeId, toNodeLabel, fromNodeLabel }) => {
   const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
   const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-
+  
+  const hasOtherEdges = edges.some(edge => 
+    edge.id !== currentEdgeId && (
+      (edge.fromID === fromID && edge.toID === toID) ||
+      (edge.fromID === toID && edge.toID === fromID)
+    )
+  );
+  
+  const labelOffset = hasOtherEdges ? (fromID < toID ? -35 : -15) : -15;
+  
   return (
     <div
       style={{
@@ -87,13 +97,16 @@ const LineDiv = ({ x1, y1, x2, y2, color, thickness = 3, label }) => {
     >
       <span
         style={{
-          transform: `rotate(${-angle}deg) translateX(-15px) translateY(-15px)`,
+          transform: `rotate(${-angle}deg) translateX(-25px) translateY(${labelOffset}px)`,
           whiteSpace: "nowrap",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          padding: "2px 4px",
+          borderRadius: "3px",
         }}
       >
-        {label}
+        From: {fromNodeLabel}, To: {toNodeLabel}, Weight:  {label}
       </span>
-      {}
+      
       <div
         style={{
           position: "absolute",
@@ -116,6 +129,7 @@ const LineDiv = ({ x1, y1, x2, y2, color, thickness = 3, label }) => {
     </div>
   );
 };
+
 
   const CircleDiv = ({
     x,
@@ -198,23 +212,29 @@ const LineDiv = ({ x1, y1, x2, y2, color, thickness = 3, label }) => {
             />
           ))}
 
-          {edges.map((edge) => {
-            const fromNode = nodes.find((n) => n.id === edge.fromID);
-            const toNode = nodes.find((n) => n.id === edge.toID);
+ {edges.map((edge) => {
+  const fromNode = nodes.find((n) => n.id === edge.fromID);
+  const toNode = nodes.find((n) => n.id === edge.toID);
 
-            return fromNode && toNode ? (
-              <LineDiv
-                key={edge.id}
-                x1={fromNode.x}
-                y1={fromNode.y}
-                x2={toNode.x}
-                y2={toNode.y}
-                color="black"
-                thickness={3}
-                label={edge.label}
-              />
-            ) : null;
-          })}
+  return fromNode && toNode ? (
+    <LineDiv
+      key={edge.id}
+      x1={fromNode.x}
+      y1={fromNode.y}
+      x2={toNode.x}
+      y2={toNode.y}
+      color="black"
+      thickness={3}
+      label={edge.label}
+      fromID={edge.fromID}
+      toID={edge.toID}
+      edges={edges}
+      currentEdgeId={edge.id}
+      toNodeLabel={toNode.label}
+      fromNodeLabel ={fromNode.label}
+    />
+  ) : null;
+})}
         </div>
       </header>
     </div>
