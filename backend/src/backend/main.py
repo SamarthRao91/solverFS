@@ -6,6 +6,8 @@ from fastapi import FastAPI
 
 app = FastAPI(title="Algorithm API")
 
+
+
 def create_graph (graph_dict: dict):
     nodes = {}
     for city, _ in graph_dict.items():
@@ -140,11 +142,6 @@ def solveProblems(problems_created: dict):
 
     if(selection == "Path Finder"):
         solvePathFinder(problems_created)
-
-@app.get("/app_create_problem")
-def app_create_problm():
-    return ["\"Path Finder \""]
-
 
 problems_created = {}
 while(True):
